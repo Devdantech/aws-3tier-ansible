@@ -1,0 +1,10 @@
+# Connect through SSM Session Manager instead of SSH (no key pair, no inbound rules).
+ansible_connection: amazon.aws.aws_ssm
+ansible_aws_ssm_region: us-east-2
+# The aws_ssm plugin moves files through S3. The bucket name comes from the environment so it
+# never lands in this public repo (scripts/04-run-ansible.sh exports it from state/ansible.env).
+ansible_aws_ssm_bucket_name: "{{ lookup('ansible.builtin.env', 'ANSIBLE_SSM_BUCKET') }}"
+ansible_aws_ssm_s3_addressing_style: virtual
+ansible_python_interpreter: /usr/bin/python3
+
+project_name: aws-3tier-ansible

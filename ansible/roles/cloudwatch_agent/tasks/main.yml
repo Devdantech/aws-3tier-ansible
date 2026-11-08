@@ -1,0 +1,21 @@
+- name: Install CloudWatch agent
+  ansible.builtin.dnf:
+    name: amazon-cloudwatch-agent
+    state: present
+
+- name: Agent config (memory, disk, nginx logs)
+  ansible.builtin.template:
+    src: amazon-cloudwatch-agent.json.j2
+    dest: "{{ cwagent_config_path }}"
+    mode: "0644"
+  notify: Load CloudWatch agent config
+
+- name: Check agent status
+  ansible.builtin.command: "{{ cwagent_ctl }} -a status -m ec2"
+  register: cwagent_status
+  changed_when: false
+
+- name: Start agent if it is not running
+  ansible.builtin.command: "{{ cwagent_ctl }} -a fetch-config -m ec2 -s -c file:{{ cwagent_config_path }}"
+  when: "'\"status\": \"running\"' not in cwagent_status.stdout"
+  changed_when: true

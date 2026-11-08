@@ -1,0 +1,2 @@
+{"metrics":{"namespace":"a3t","metrics_collected":{"mem":{"measurement":["mem_used_percent"]},"disk":{"measurement":["used_percent"],"resources":["/"]}}},
+ "logs":{"logs_collected":{"files":{"collect_list":[{"file_path":"/var/log/nginx/access.log","log_group_name":"a3t-nginx-access","log_stream_name":"{instance_id}"}]}}}}

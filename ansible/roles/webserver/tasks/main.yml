@@ -1,0 +1,8 @@
+- name: Install nginx
+  dnf: { name: nginx, state: present }
+- name: Test page
+  copy:
+    dest: /usr/share/nginx/html/index.html
+    content: "<h1>aws-3tier-ansible M3 - {{ ansible_hostname }}</h1>\n"
+- name: Start nginx
+  service: { name: nginx, state: started, enabled: true }

@@ -1,0 +1,5 @@
+cwagent_config_path: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+cwagent_ctl: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+cwagent_namespace: "{{ project_name }}"
+# Log groups are pre-created with 7-day retention by scripts/02-launch-web.sh.
+cwagent_log_group_prefix: "/{{ project_name }}"

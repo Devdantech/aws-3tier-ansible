@@ -1,0 +1,16 @@
+# Dynamic inventory: every running instance tagged Project=aws-3tier-ansible.
+# Hosts are named by instance ID (no IPs or DNS needed: the SSM connection uses the ID).
+# Groups come from the Role tag, e.g. Role=web -> group "role_web".
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-2
+filters:
+  tag:Project: aws-3tier-ansible
+  instance-state-name: running
+hostnames:
+  - instance-id
+keyed_groups:
+  - key: tags.Role
+    prefix: role
+compose:
+  ansible_host: instance_id

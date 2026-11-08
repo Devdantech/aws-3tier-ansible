@@ -61,7 +61,7 @@ flowchart TB
 |---|---|---|---|
 | M1 | 2-AZ VPC (public/private subnets, IGW, NAT, route tables) via Bash/AWS CLI, plus teardown script, budget alarm, IAM admin with MFA | ✅ Done | [`scripts/`](scripts), [`docs/vpc-resource-map.png`](docs/vpc-resource-map.png), [`docs/nat-gateway-available.png`](docs/nat-gateway-available.png) |
 | M2 | S3 hardening + least-privilege EC2 role + private instance reached only through Session Manager | ✅ Done | [`policies/bucket-https-only.json`](policies/bucket-https-only.json), [`docs/m2-least-privilege-test.png`](docs/m2-least-privilege-test.png) |
-| M3 | EC2 configured with Ansible + launch template | ⏳ Planned | |
+| M3 | EC2 configured with Ansible + launch template | 🚧 In progress | [`scripts/02-launch-web.sh`](scripts/02-launch-web.sh), [`scripts/03-create-launch-template.sh`](scripts/03-create-launch-template.sh), [`ansible/`](ansible) |
 | M4 | Application Load Balancer + Auto Scaling group | ⏳ Planned | |
 | M5 | CloudWatch alarms → SNS notifications | ⏳ Planned | |
 | M6 | Final write-up: architecture diagram, design decisions mapped to SAA-C03 domains, cost notes | ⏳ Planned | |
@@ -121,12 +121,17 @@ BUDGET_EMAIL=you@example.com ./scripts/00-budget-and-iam-checklist.sh
 # Build the 2-AZ network (takes a few minutes while the NAT Gateway comes up)
 ./scripts/01-create-vpc.sh
 
+# M3: web instance + launch template, then configure it with Ansible from WSL (see ansible/README.md)
+./scripts/02-launch-web.sh
+./scripts/03-create-launch-template.sh
+./scripts/04-run-ansible.sh
+
 # Tear it all down when you're finished. The NAT Gateway bills by the hour.
 ./scripts/99-teardown.sh
 ```
 
 > ⚠️ **Cost:** NAT Gateway and Elastic IP charges keep running until you tear them down. Run `99-teardown.sh` after every session.
-> The teardown script removes only the M1 network. Delete the M2 test instance first, and remove the bucket and role separately if you no longer need them.
+> The teardown script removes the M3 web tier (instances, launch template, web SG, log groups, the CloudWatch policy it attached) and then the M1 network. The M2 bucket and role are kept; remove them separately if you no longer need them.
 
 ## Repository layout
 
@@ -134,7 +139,7 @@ BUDGET_EMAIL=you@example.com ./scripts/00-budget-and-iam-checklist.sh
 scripts/    Bash + AWS CLI build, teardown, and shared settings (lib.sh)
 policies/   IAM / bucket policy JSON
 docs/       Screenshots used as evidence
-ansible/    Inventory and roles (Milestone 3)
+ansible/    aws_ec2 inventory, nginx + CloudWatch agent roles, site.yml (Milestone 3)
 state/      Local resource IDs written by the scripts (gitignored)
 ```
 

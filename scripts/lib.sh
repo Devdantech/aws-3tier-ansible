@@ -7,7 +7,15 @@ set -euo pipefail
 : "${PROJECT_NAME:=aws-3tier-ansible}"
 : "${ENVIRONMENT:=lab}"
 
-export AWS_REGION AWS_PROFILE AWS_DEFAULT_REGION="$AWS_REGION" PROJECT_NAME ENVIRONMENT
+: "${INSTANCE_PROFILE:=dj-3tier-ec2-role}"
+
+# Git Bash rewrites args that start with "/" (e.g. SSM parameter names) into Windows paths. Turn that off.
+export MSYS_NO_PATHCONV=1
+export AWS_REGION AWS_PROFILE AWS_DEFAULT_REGION="$AWS_REGION" PROJECT_NAME ENVIRONMENT INSTANCE_PROFILE
+
+# Latest Amazon Linux 2023 x86_64 AMI, resolved through the public SSM parameter.
+AL2023_SSM_PARAM="/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
+LOG_GROUP_PREFIX="/${PROJECT_NAME}"
 
 COMMON_TAGS="Key=Project,Value=${PROJECT_NAME} Key=Environment,Value=${ENVIRONMENT} Key=ManagedBy,Value=cli"
 

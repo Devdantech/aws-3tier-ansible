@@ -1,0 +1,27 @@
+- name: Install nginx
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
+
+- name: Health check endpoint for the (M4) load balancer
+  ansible.builtin.template:
+    src: health.conf.j2
+    dest: /etc/nginx/default.d/health.conf
+    mode: "0644"
+  notify: Reload nginx
+
+- name: Landing page
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+    mode: "0644"
+
+- name: Validate nginx config
+  ansible.builtin.command: nginx -t
+  changed_when: false
+
+- name: Enable and start nginx
+  ansible.builtin.systemd_service:
+    name: nginx
+    state: started
+    enabled: true

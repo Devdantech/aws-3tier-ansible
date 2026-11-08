@@ -1,0 +1,3 @@
+- name: Load CloudWatch agent config
+  ansible.builtin.command: "{{ cwagent_ctl }} -a fetch-config -m ec2 -s -c file:{{ cwagent_config_path }}"
+  changed_when: true

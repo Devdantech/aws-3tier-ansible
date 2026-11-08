@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>{{ nginx_site_title }}</title></head>
+<body>
+  <h1>{{ nginx_site_title }}</h1>
+  <p>Served by <code>{{ inventory_hostname }}</code> in <code>{{ ansible_facts['default_ipv4']['address'] }}</code>.</p>
+  <p>Configured by Ansible over SSM Session Manager. No SSH, no public IP.</p>
+</body>
+</html>

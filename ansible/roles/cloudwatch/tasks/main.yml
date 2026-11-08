@@ -1,0 +1,6 @@
+- name: Install CloudWatch agent
+  dnf: { name: amazon-cloudwatch-agent, state: present }
+- name: Agent config
+  copy: { src: config.json, dest: /opt/aws/amazon-cloudwatch-agent/etc/config.json }
+- name: Start agent with config
+  command: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/config.json

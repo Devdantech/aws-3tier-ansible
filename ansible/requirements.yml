@@ -1,0 +1,4 @@
+collections:
+  # amazon.aws provides both the aws_ec2 inventory plugin and the aws_ssm connection plugin.
+  - name: amazon.aws
+    version: ">=9.0.0"
